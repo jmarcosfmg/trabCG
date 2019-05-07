@@ -4,8 +4,25 @@ from pygame import gfxdraw
 pygame.init()
 screen = pygame.display.set_mode((400,400))
 
+
 white=(255,255,255)
 black=(0,0,0)
+red = (255,0,0)
+lime = (0,255,0)
+blue = (0,0,255)
+yellow = (255,255,0)
+aqua = (0,255,255)
+magenta = (255,0,255)
+silver = (192,192,192)
+gray = (128,128,128)
+maroon = (128,0,0)
+olive = (128,128,0)
+green = (0,128,0)
+purple = (128,0,128)
+teal = (0,128,128)
+navy = (0,0,128)
+
+color = black #default
 
 def bresenham(coord):
 	start = coord[0]
@@ -13,9 +30,7 @@ def bresenham(coord):
 	x1, y1 = start
 	x2, y2 = end
 	tam_vert = pygame.display.get_surface().get_height()
-	y1 = tam_vert - y1
-	y2 = tam_vert - y2
-
+	
 	if x1>x2:
 		x1,x2 = x2, x1
 		y1,y2 = y2, y1
@@ -36,7 +51,6 @@ def bresenham(coord):
 	else:
 		mudou = 0
 	
-	print("start and end xy = ["+str(x1))
 	dy2   = 2*dy 
 	dy2mdx  = dy2 - dx #2*dy - dx menos dx
 	dydx2 = dy2 - 2*dx #2*dy*dx
@@ -56,7 +70,7 @@ def bresenham(coord):
 			y = y+sinaly
 			x = x+1
 			dy2mdx = dy2mdx + dydx2
-		screen.set_at((x,y),white)
+		screen.set_at((x,y),color)
 
 	pygame.display.flip()
 
@@ -74,9 +88,10 @@ def clica():
 	print(posic)
 	return posic
 
-
+screen.fill(white)
+pygame.display.flip()
 while 1:
-	screen.fill((0,0,0))
+	screen.fill(white)
 	bresenham(clica())
 
 	for event in pygame.event.get():
