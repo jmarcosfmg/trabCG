@@ -3,40 +3,81 @@ from pygame import gfxdraw
 
 pygame.init()
 screen = pygame.display.set_mode((400,400))
-screen.fill((0,0,0))
-pygame.display.flip()
 
 white=(255,255,255)
+black=(0,0,0)
 
-#Esta funcao funciona apenas 
-#para o primeiro quadrante
-def bresenham(x1,y1,x2,y2):
-	y1 = y1 + 200
-	y2 = y2 + 200
-	#carrega no fb o pixel (x1,y1)
-	screen.set_at((x1,y1),white)
-	#computa os deltas necessarios
-	dx    = x2 - x1
-	dy    = y2 - y1
-	dy2   = 2*dy
-	dydx2 = dy2 - 2*dx
-	pant  = dy2 - dx
+def bresenham(coord):
+	start = coord[0]
+	end = coord[1]
+	x1, y1 = start
+	x2, y2 = end
+	tam_vert = pygame.display.get_surface().get_height()
+	y1 = tam_vert - y1
+	y2 = tam_vert - y2
+
+	if x1>x2:
+		x1,x2 = x2, x1
+		y1,y2 = y2, y1
+
+	dx = x2 - x1
+	dy = abs(y2-y1)
+
+	if y2-y1 < 0:
+		sinaly = -1
+	elif y2-y1>0:
+		sinaly = 1
+	else:
+		sinaly = 0
+
+	if dy>dx:
+		dx, dy = dy, dx
+		mudou = 1
+	else:
+		mudou = 0
+	
+	print("start and end xy = ["+str(x1))
+	dy2   = 2*dy 
+	dy2mdx  = dy2 - dx #2*dy - dx menos dx
+	dydx2 = dy2 - 2*dx #2*dy*dx
+
 	x = x1
 	y = y1
-	
+	screen.set_at((x,y),white)
+
 	for i in range(dx):
-		if pant < 0:
-			screen.set_at((x+1,y),white)
-			pant = pant + dy2 
+		if dy2mdx < 0:
+			if mudou >0:
+				y = y + sinaly
+			else:
+				x = x+1
+			dy2mdx = dy2mdx + dy2
 		else:
-			screen.set_at((x+1,y-1),white)
-			pant = pant + dydx2
-			y -= 1;
-		x += 1;
+			y = y+sinaly
+			x = x+1
+			dy2mdx = dy2mdx + dydx2
+		screen.set_at((x,y),white)
+
 	pygame.display.flip()
 
-bresenham(10,10,50,50)
+
+def clica():
+	i = 0
+	posic = []
+	while i<2:
+		for e in pygame.event.get():
+			if e.type == pygame.QUIT:
+				sys.exit()
+			if e.type == pygame.MOUSEBUTTONDOWN:
+				posic.append(pygame.mouse.get_pos())
+				i = i+1
+	print(posic)
+	return posic
+
 
 while 1:
+	screen.fill((0,0,0))
+	bresenham(clica())
+
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT: sys.exit()
